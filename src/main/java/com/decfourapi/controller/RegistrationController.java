@@ -1,7 +1,11 @@
 package com.decfourapi.controller;
 
 import com.decfourapi.entity.Registration;
+import com.decfourapi.payload.RegistrationDto;
 import com.decfourapi.service.RegistrationService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +22,9 @@ public class RegistrationController {
 
     //http://localhost:8080/api/v1/registration
     @PostMapping
-    public String addRegistration(@RequestBody Registration registration){
-        registrationService.saveRegistration(registration);
-        return "Done";
+    public ResponseEntity<RegistrationDto> addRegistration(@RequestBody RegistrationDto registrationDto){
+        RegistrationDto r=registrationService.saveRegistration(registrationDto);
+        return new ResponseEntity<>(r, HttpStatus.CREATED);
     }
 
     //Using query parameter
