@@ -3,6 +3,7 @@ package com.decfourapi.service;
 import com.decfourapi.entity.Registration;
 import com.decfourapi.payload.RegistrationDto;
 import com.decfourapi.repository.RegistrationRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,27 +13,31 @@ import java.util.Optional;
 public class RegistrationService {
 
     private RegistrationRepository registrationRepository;
-
-    public RegistrationService(RegistrationRepository registrationRepository) {
+    private ModelMapper modelMapper;
+    public RegistrationService(RegistrationRepository registrationRepository, ModelMapper modelMapper) {
         this.registrationRepository = registrationRepository;
+        this.modelMapper = modelMapper;
     }
 
     public RegistrationDto saveRegistration(RegistrationDto registrationDto){
         //Convert to Entity from Dto
-        Registration registration=new Registration();
-        registration.setName(registrationDto.getName());
-        registration.setEmailId(registrationDto.getEmailId());
-        registration.setMobile(registrationDto.getMobile());
+        Registration registration=convertDtoToEntity(registrationDto);
         Registration savedReg=registrationRepository.save(registration);
-
         //Convert entity to dto
-        RegistrationDto savedRegDto=new RegistrationDto();
-        savedRegDto.setName(savedReg.getName());
-        savedRegDto.setEmailId(savedReg.getEmailId());
-        savedRegDto.setMobile(savedReg.getMobile());
+        RegistrationDto savedRegDto=convertEntityToDto(savedReg);
         return savedRegDto;
     }
 
+    Registration convertDtoToEntity(RegistrationDto registrationDto){
+
+        Registration registration=modelMapper.map(registrationDto,Registration.class);
+        return registration;
+    }
+
+    RegistrationDto convertEntityToDto(Registration registration){
+        RegistrationDto registrationDto=modelMapper.map(registration,RegistrationDto.class);
+        return registrationDto;
+    }
     public void deleteRegistration(long id) {
         registrationRepository.deleteById(id);
     }
@@ -55,4 +60,5 @@ public class RegistrationService {
         Registration reg=opReg.get();
         return reg;
     }
+
 }

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @RequestMapping("api/v1/registration")
 public class RegistrationController {
@@ -21,11 +23,11 @@ public class RegistrationController {
     }
 
     //http://localhost:8080/api/v1/registration
-    @PostMapping
-    public ResponseEntity<RegistrationDto> addRegistration(@RequestBody RegistrationDto registrationDto){
+   @PostMapping
+   public  ResponseEntity<RegistrationDto> addRegistration(@RequestBody RegistrationDto registrationDto){
         RegistrationDto r=registrationService.saveRegistration(registrationDto);
-        return new ResponseEntity<>(r, HttpStatus.CREATED);
-    }
+        return new ResponseEntity<>(r,HttpStatus.CREATED);
+   }
 
     //Using query parameter
     //http://localhost:8080/api/v1/registration?id=3
@@ -37,7 +39,7 @@ public class RegistrationController {
 
     //Using path variable
     //http://localhost:8080/api/v1/registration/3
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public String deleteRegistration(@PathVariable long id){
         registrationService.deleteRegistration(id);
         return "deleted";
@@ -46,9 +48,7 @@ public class RegistrationController {
 
     //http://localhost:8080/api/v1/registration/3
     @PutMapping("{id}")
-    public String updateRegistration(@PathVariable long id,
-    @RequestBody Registration registration//updated here
-    ){
+    public String updateRegistration(@PathVariable long id,@RequestBody Registration registration){
         registrationService.updateRegistration(id,registration);
         return "updated";
     }

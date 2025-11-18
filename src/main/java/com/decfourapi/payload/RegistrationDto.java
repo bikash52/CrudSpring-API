@@ -1,6 +1,7 @@
 package com.decfourapi.payload;
 
 public class RegistrationDto {
+    private long id;
     private String name;
     private String emailId;
     private String mobile;
@@ -27,5 +28,13 @@ public class RegistrationDto {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }
