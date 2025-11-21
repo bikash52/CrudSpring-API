@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -53,14 +55,21 @@ public class RegistrationController {
         return "updated";
     }
 
-    //http://localhost:8080/api/v1/registration
+    //http://localhost:8080/api/v1/registration?pageNo=0&pageSize=5&sortBy=name&sortDir=asc
     @GetMapping
-    public List<Registration> getAllRegistrations(){
-        return registrationService.getAllRegistrations();
+    public List<Registration> getAllRegistrations(
+            @RequestParam(defaultValue = "0",required = false) int pageNo,
+            @RequestParam(defaultValue = "5",required = false) int pageSize,
+            @RequestParam(defaultValue = "id",required = false) String sortBy,
+            @RequestParam(defaultValue = "asc",required = false) String sortDir
+    ){
+        return registrationService.getAllRegistrations(pageNo, pageSize,sortBy,sortDir);
     }
 
     @GetMapping("/id/{id}")
-    public Registration getRegistrationById(@PathVariable long id){
-        return registrationService.getRegistrationById(id);
+    public ResponseEntity<Registration> getRegistrationById(@PathVariable long id) throws FileNotFoundException {
+        FileReader fr=new FileReader("G://test.txt");
+        Registration registration=registrationService.getRegistrationById(id);
+        return new ResponseEntity<>(registration,HttpStatus.OK);
     }
 }

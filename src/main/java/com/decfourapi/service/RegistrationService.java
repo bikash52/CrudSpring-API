@@ -1,9 +1,14 @@
 package com.decfourapi.service;
 
 import com.decfourapi.entity.Registration;
+import com.decfourapi.exception.ResourceNotFound;
 import com.decfourapi.payload.RegistrationDto;
 import com.decfourapi.repository.RegistrationRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +25,7 @@ public class RegistrationService {
     }
 
     public RegistrationDto saveRegistration(RegistrationDto registrationDto){
-        //Convert to Entity from Dto
+        //Convert Dto to Entity
         Registration registration=convertDtoToEntity(registrationDto);
         Registration savedReg=registrationRepository.save(registration);
         //Convert entity to dto
@@ -51,14 +56,20 @@ public class RegistrationService {
         registrationRepository.save(reg);
     }
 
-    public List<Registration> getAllRegistrations() {
-        return registrationRepository.findAll();
+    public List<Registration> getAllRegistrations(int pageNo, int pageSize, String sortBy, String sortDir) {
+        //use ternary operator for creating sort object
+        Sort sort=sortDir.equalsIgnoreCase("asc")? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        Pageable page=PageRequest.of(pageNo, pageSize, sort);
+        Page<Registration> records=registrationRepository.findAll(page);
+        List<Registration> registrations=records.getContent();
+        return registrations;
     }
 
     public Registration getRegistrationById(long id) {
-        Optional<Registration> opReg = registrationRepository.findById(id);
-        Registration reg=opReg.get();
-        return reg;
+      Registration registration = registrationRepository.findById(id)
+               .orElseThrow(() -> new ResourceNotFound("Registration not found with id: " + id));
+      return registration;
     }
 
 }

@@ -17,10 +17,10 @@ public class Registration {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "email_id", nullable = false)
+    @Column(name = "email_id", nullable = false,unique=true)
     private String emailId;
 
-    @Column(name = "mobile", nullable=false, length = 10)
+    @Column(name = "mobile", nullable=false, length = 10,unique=true)
     private String mobile;
 
     public Long getId() {
